@@ -11,6 +11,11 @@ const UserSchema = mongoose.Schema({
     required: [true, "Please provide an Email!"],
     unique: [true, "Email Exist"],
   },
+  role: {
+    type: Number,
+    required: [true, "Role Number!"],
+    unique: false,
+  },
   password: {
     type: String,
     required: [true, "Please provide a password!"],

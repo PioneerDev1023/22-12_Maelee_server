@@ -30,13 +30,13 @@ const User = require("./model/user");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (request, response, next) => {
+app.get("/api/", (request, response, next) => {
     response.json({ message: "Hello! This is your server response!" });
     next();
 });
 
 // register endpoint
-app.post("/register", (request, response) => {
+app.post("/api/register", (request, response) => {
     // hash the password
     bcrypt
         .hash(request.body.password, 10)
@@ -45,6 +45,7 @@ app.post("/register", (request, response) => {
             const user = new User({
                 username: request.body.username,
                 email: request.body.email,
+                role: "2",
                 password: hashedPassword,
             });
 
@@ -76,7 +77,7 @@ app.post("/register", (request, response) => {
 });
 
 // login endpoint
-app.post("/login", (request, response) => {
+app.post("/api/login", (request, response) => {
     // check if email exists
     User.findOne({ email: request.body.email })
 
@@ -102,6 +103,7 @@ app.post("/login", (request, response) => {
                         {
                             userId: user._id,
                             userEmail: user.email,
+                            userRole: user.role,
                         },
                         "RANDOM-TOKEN",
                         { expiresIn: "24h" }
@@ -111,6 +113,7 @@ app.post("/login", (request, response) => {
                     response.status(200).send({
                         message: "Login Successful",
                         email: user.email,
+                        role: user.role,
                         token,
                     });
                 })
@@ -131,13 +134,23 @@ app.post("/login", (request, response) => {
         });
 });
 
+app.get("/api/getUsers", async ( request, response ) => {
+    try {
+        const totalUsers = await User.find({ role: 2});
+        return response.status(200).json({ data: totalUsers });
+    } catch (err) {
+        return response.status(400).json({ error_msg: err.message });
+        // throw Error(err);
+    }
+})
+
 // free endpoint
-app.get("/free-endpoint", (request, response) => {
+app.get("/api/free-endpoint", (request, response) => {
     response.json({ message: "You are free to access me anytime" });
 });
 
 // authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
+app.get("/api/auth-endpoint", auth, (request, response) => {
     response.json({ message: "You are authorized to access me" });
 });
 

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// const MONGOURI = "mongodb://localhost:27017/roverex";
+// const MONGOURI = "mongodb://localhost:27017/maelee";
 const MONGOURI = "mongodb+srv://maelee:ucTKsfP1QV69ipYa@cluster0.dhvbjdo.mongodb.net/maelee?retryWrites=true&w=majority";
 
 const InitiateMongoServer = async () => {
